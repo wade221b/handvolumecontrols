@@ -66,6 +66,7 @@ class HandDetector():
         self.modelComplexity = modelComplexity
         self.detectionConfidence = detectionConfidence
         self.trackConfidence = trackConfidence
+        self.results = None
 
         self.mpHands = mp.solutions.hands
         # self.hands = self.mpHands.Hands(False)
@@ -91,28 +92,34 @@ class HandDetector():
     def findHands(self, img, draw = True):
         #to send RGB image to the hands. for that first need to convert 
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  #the image from camera has to first be converted
-        results = self.hands.process(imgRGB)
+        self.results = self.hands.process(imgRGB)
 
         # print(results.multi_hand_landmarks)
 
-        if results.multi_hand_landmarks:
-            for handLms in results.multi_hand_landmarks: #draw lines for each hand ditected
-                # for id, lm in enumerate(handLms.landmark): #21 values would be printed. those are the landmark as documentd in HandLandmark.png
-
-                #     h, w, c = img.shape
-                #     cx, cy = int(lm.x * w ), int(lm.y*h) #position of centre
-                #     print(id, cx, cy)
-
-                #     if id == 0:
-                #         cv2.circle(img, (cx, cy), 20, (255, 0, 255), cv2.FILLED)
+        if self.results.multi_hand_landmarks:
+            for handLms in self.results.multi_hand_landmarks: #draw lines for each hand ditected
                 if draw:
-                    # print("drawing, can yoyu see ?")
                     self.mpDraw.draw_landmarks(img, handLms, self.mpHands.HAND_CONNECTIONS) #because we are displaying on the original image, we pass this and not the RGB image
                 #mpHands.HAND_CONNECTIONS draws the connections between those points
         return img
     
-    def findPosition(self):
-        pass
+    def findPosition(self, img, handNo=0, draw =True ):
+        lmList = []
+
+        if self.results.multi_hand_landmarks:
+
+            currentHand = self.results.multi_hand_landmarks[handNo]
+            for id, lm in enumerate(currentHand.landmark): #21 values would be printed. those are the landmark as documentd in HandLandmark.png
+
+                h, w, c = img.shape
+                cx, cy = int(lm.x * w ), int(lm.y*h) #position of centre
+                # print(id, cx, cy)
+
+                lmList.append([id, cx, cy])
+
+                if draw and id is 0:
+                    cv2.circle(img, (cx, cy), 20, (255, 0, 255), cv2.FILLED)
+        return lmList
 
 def main():
     pTime = 0 #previous time
@@ -126,6 +133,9 @@ def main():
     while True:
         success, img = cap.read()
         img = detector.findHands(img=img)
+        lmlist = detector.findPosition(img)
+        if len(lmlist):
+            print(lmlist[4]) # passing in landmarknumber
 
         cTime = time.time()
         fps = 1/(cTime - pTime) #FPS, or Frames Per Second, is a measure of the rate at which a computer video game can produce and render frames. Generally, the higher the FPS number, the smoother and more engaging gameplay will be for users.
