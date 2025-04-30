@@ -31,6 +31,13 @@ while True:
         x1, y1 = lmlist[4][1],  lmlist[4][2]
         x2, y2 = lmlist[8][1],  lmlist[8][2]
 
+        cv2. circle(img, (x1, y1), 15, (255, 20, 49), cv2.FILLED, 5)
+        cv2. circle(img, (x2, y2), 15, (255, 20, 49), cv2.FILLED, 5)
+        cv2.line(img, (x1, y1),  (x2, y2), cv2.FILLED)
+
+
+
+
     cTime = time.time()
     fps = 1/(cTime - pTime) #FPS, or Frames Per Second, is a measure of the rate at which a computer video game can produce and render frames. Generally, the higher the FPS number, the smoother and more engaging gameplay will be for users.
     pTime = cTime
