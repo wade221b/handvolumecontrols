@@ -6,7 +6,7 @@ import mediapipe as mp
 import HandTrackingModule as htm
 import DeviceVolumeControl as dvc
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 vol = dvc.DeviceVolumeControlCrude()
 
 # wCam, hCam = 640, 480 #to set camera width
