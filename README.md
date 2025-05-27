@@ -9,6 +9,6 @@ Follow the following steps to get the project running
 ```
 python -m venv venv
 source venv/bin/activate                          
-pip install req.txt
+pip install -r req.txt
 python volumeControlByHand.py
 ```
